@@ -1,25 +1,30 @@
 import { useEffect, useState } from "react"
 import "./App.css"
 
-import { getJobs } from "./api/workerApi"
+import { getJobs, getWorker } from "./api/workerApi"
 import type { Job } from "./types/jobs"
+import type { Worker } from "./types/workers"
 import JobCard from "./components/JobCard"
 
 function App() {
   const [jobs, setJobs] = useState<Job[]>([])
+  const [worker, setWorker] = useState<Worker | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    async function loadJobs() {
+    async function loadData() {
       try {
-        const data = await getJobs()
-        setJobs(data)
+        const [jobsData, workerData] = await Promise.all([getJobs(), getWorker()])
+        setJobs(jobsData)
+        setWorker(workerData)
+      } catch (error) {
+        console.error("Failed to load data:", error)
       } finally {
         setLoading(false)
       }
     }
 
-    loadJobs()
+    loadData()
   }, [])
 
   if (loading) {
@@ -30,7 +35,7 @@ function App() {
     <div className="app">
       <header className="header">
         <h2>swipejobs</h2>
-        <span>Jim Rose</span>
+        <span>{worker ? `${worker.firstName} ${worker.lastName}` : ""}</span>
       </header>
 
       {jobs.map((job) => (

@@ -1,3 +1,5 @@
+import type { Address } from "./index.ts"
+
 export interface Job {
   jobId: string
   jobTitle: JobTitle
@@ -19,11 +21,6 @@ export interface Company {
   name: string
   address: Address
   reportTo: ReportTo
-}
-
-export interface Address {
-  formattedAddress: string
-  zoneId: string
 }
 
 export interface ReportTo {
